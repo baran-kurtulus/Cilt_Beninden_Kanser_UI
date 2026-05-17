@@ -1,0 +1,49 @@
+<div class="upload-container">
+  <h2 class="section-title">Görüntü Yükle</h2>
+  <p class="section-desc">Analiz edilecek ben fotoğrafını yükleyin veya kamerayla çekin.</p>
+
+  <div class="drop-zone" [class.dragover]="isDragging">
+    <div class="drop-zone-content" *ngIf="!previewUrl">
+      <div class="upload-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+      </div>
+      <p *ngIf="!isCameraOpen">Fotoğrafı yükleyin veya kamerayla çekin</p>
+
+      <div class="input-actions" *ngIf="!isCameraOpen">
+        <button class="btn btn-primary" type="button" (click)="fileInput.click()">Dosya Seç</button>
+        <button class="btn btn-outline" type="button" [disabled]="!isCameraSupported" (click)="startCamera()">
+          Kamera Aç
+        </button>
+      </div>
+
+      <input #fileInput type="file" class="file-input" (change)="onFileSelected($event)" accept="image/*">
+
+      <div class="camera-area" *ngIf="isCameraOpen">
+        <video #videoElement class="camera-preview" playsinline muted autoplay></video>
+        <div class="preview-actions">
+          <button class="btn btn-primary" type="button" (click)="capturePhoto()">Fotoğraf Çek</button>
+          <button class="btn btn-outline" type="button" (click)="stopCamera()">İptal</button>
+        </div>
+      </div>
+
+      <p class="camera-error" *ngIf="cameraError">{{ cameraError }}</p>
+    </div>
+
+    <div class="preview-area" *ngIf="previewUrl">
+      <img [src]="previewUrl" alt="Önizleme" class="image-preview">
+      <div class="preview-actions">
+        <button class="btn btn-outline" type="button" (click)="clearSelection()">Değiştir</button>
+        <button class="btn btn-primary" type="button">Analizi Başlat</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="upload-tips">
+    <h3>İpuçları:</h3>
+    <ul>
+      <li>Görüntünün net ve odaklanmış olduğundan emin olun.</li>
+      <li>Yeterli ışıklandırma altında çekim yapın.</li>
+      <li>Sadece ilgili bölgeyi kadraja alın.</li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+.app-footer {
+  background-color: var(--primary-dark);
+  color: white;
+  padding-block: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
+}
+
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  text-align: center;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+.footer-info p {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.footer-disclaimer {
+  max-width: 600px;
+}
+
+.footer-disclaimer p {
+  margin-bottom: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  opacity: 0.7;
+}

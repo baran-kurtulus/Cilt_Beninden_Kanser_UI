@@ -1,0 +1,81 @@
+/* You can add global styles to this file, and also import other style files */
+
+:root {
+  /* Minimalist Clinical Color Palette */
+  --primary-color: #2C7A7B; /* Medical Teal */
+  --primary-dark: #234E52;
+  --primary-light: #B2F5EA;
+  
+  --secondary-color: #E6FFFA; /* Soft Blue/Gray */
+  
+  --bg-color: #F7FAFC; /* Off-white / Very light gray */
+  --surface-color: #FFFFFF; /* White for cards/panels */
+  
+  --text-main: #2D3748; /* Dark Gray */
+  --text-muted: #718096; /* Lighter Gray for secondary text */
+  
+  --success-color: #38A169;
+  --warning-color: #DD6B20;
+  --danger-color: #E53E3E;
+
+  --border-color: #E2E8F0;
+
+  /* Typography */
+  --font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  
+  /* Spacing & Layout */
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --border-radius: 8px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Typography styles */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: var(--spacing-md);
+}
+
+p {
+  margin-bottom: var(--spacing-md);
+}
+
+/* Common container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+/* Utility classes */
+.text-center { text-align: center; }
+.mt-lg { margin-top: var(--spacing-lg); }
+.mb-lg { margin-bottom: var(--spacing-lg); }

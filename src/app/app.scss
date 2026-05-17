@@ -1,0 +1,24 @@
+.main-content {
+  padding-block: var(--spacing-xl);
+  min-height: calc(100vh - 160px); /* Adjust based on header/footer height */
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-xl);
+  align-items: start;
+
+  @media (min-width: 992px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.upload-section, .result-section {
+  background: var(--surface-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--border-color);
+  min-height: 400px;
+}
