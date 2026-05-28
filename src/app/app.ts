@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Header } from './components/header/header';
+import { AuthPanel } from './components/auth-panel/auth-panel';
 import { UploadArea } from './components/upload-area/upload-area';
 import { AnalysisResult } from './components/analysis-result/analysis-result';
 import { Footer } from './components/footer/footer';
@@ -11,6 +12,7 @@ import { Footer } from './components/footer/footer';
   imports: [
     RouterOutlet,
     Header,
+    AuthPanel,
     UploadArea,
     AnalysisResult,
     Footer

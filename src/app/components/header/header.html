@@ -13,5 +13,11 @@
         <li><a href="#">İletişim</a></li>
       </ul>
     </nav>
+    <div class="auth-status">
+      <span class="status-pill" [class.active]="auth.isAuthenticated()">
+        {{ auth.isAuthenticated() ? 'Oturum Açık' : 'Giriş Gerekli' }}
+      </span>
+      <button class="btn btn-outline" type="button" *ngIf="auth.isAuthenticated()" (click)="logout()">Çıkış</button>
+    </div>
   </div>
 </header>

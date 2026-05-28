@@ -12,6 +12,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
 }
 
 .logo-area {
@@ -54,4 +56,41 @@
     color: var(--primary-color);
     text-decoration: none;
   }
+}
+
+.auth-status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.status-pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background-color: color-mix(in srgb, var(--warning-color) 15%, transparent);
+  color: var(--warning-color);
+
+  &.active {
+    background-color: color-mix(in srgb, var(--success-color) 15%, transparent);
+    color: var(--success-color);
+  }
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background-color: transparent;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-outline {
+  color: var(--text-main);
+}
+
+.btn-outline:hover {
+  background-color: var(--border-color);
 }

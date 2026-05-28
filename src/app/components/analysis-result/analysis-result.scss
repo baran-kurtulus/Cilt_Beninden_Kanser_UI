@@ -26,6 +26,43 @@
   }
 }
 
+.empty-state.locked {
+  color: var(--primary-dark);
+}
+
+.status-card {
+  display: grid;
+  gap: var(--spacing-md);
+  align-items: center;
+  justify-items: center;
+  text-align: center;
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius);
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+}
+
+.status-card.error {
+  color: var(--danger-color);
+  border-color: color-mix(in srgb, var(--danger-color) 30%, var(--border-color));
+}
+
+.spinner {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 3px solid color-mix(in srgb, var(--primary-color) 20%, transparent);
+  border-top-color: var(--primary-color);
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .result-content {
   display: flex;
   flex-direction: column;

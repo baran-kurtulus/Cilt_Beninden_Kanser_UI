@@ -1,0 +1,146 @@
+.auth-panel {
+  display: grid;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+
+  @media (min-width: 992px) {
+    grid-template-columns: 2fr 1fr;
+    align-items: stretch;
+  }
+}
+
+.auth-card {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary-light) 60%, transparent), var(--surface-color));
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+}
+
+.auth-header {
+  margin-bottom: var(--spacing-lg);
+
+  h2 {
+    font-size: 1.6rem;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .subtext {
+    color: var(--text-muted);
+    margin-bottom: 0;
+  }
+}
+
+.eyebrow {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--primary-dark);
+  margin-bottom: var(--spacing-sm);
+}
+
+.auth-tabs {
+  display: inline-flex;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 4px;
+  gap: 6px;
+  background-color: var(--surface-color);
+  margin-bottom: var(--spacing-lg);
+}
+
+.tab {
+  border: none;
+  background: transparent;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+
+  &.active {
+    background-color: var(--primary-color);
+    color: white;
+  }
+}
+
+.auth-form {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+  color: var(--text-main);
+
+  span {
+    font-size: 0.85rem;
+  }
+
+  input {
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    font-size: 0.95rem;
+    background-color: white;
+  }
+}
+
+.form-error {
+  color: var(--danger-color);
+  font-size: 0.9rem;
+}
+
+.form-notice {
+  color: var(--success-color);
+  font-size: 0.9rem;
+}
+
+.btn {
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+
+  &:hover {
+    background-color: var(--primary-dark);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.auth-info {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.info-card {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+
+  h3 {
+    margin-bottom: var(--spacing-sm);
+    font-size: 1rem;
+  }
+
+  p {
+    margin-bottom: 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+}

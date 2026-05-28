@@ -10,13 +10,13 @@
       <p *ngIf="!isCameraOpen">Fotoğrafı yükleyin veya kamerayla çekin</p>
 
       <div class="input-actions" *ngIf="!isCameraOpen">
-        <button class="btn btn-primary" type="button" (click)="fileInput.click()">Dosya Seç</button>
-        <button class="btn btn-outline" type="button" [disabled]="!isCameraSupported" (click)="startCamera()">
+        <button class="btn btn-primary" type="button" (click)="fileInput.click()" [disabled]="analysisStatus() === 'loading'">Dosya Seç</button>
+        <button class="btn btn-outline" type="button" [disabled]="!isCameraSupported || analysisStatus() === 'loading'" (click)="startCamera()">
           Kamera Aç
         </button>
       </div>
 
-      <input #fileInput type="file" class="file-input" (change)="onFileSelected($event)" accept="image/*">
+      <input #fileInput type="file" class="file-input" (change)="onFileSelected($event)" accept="image/*" [disabled]="analysisStatus() === 'loading'">
 
       <div class="camera-area" *ngIf="isCameraOpen">
         <video #videoElement class="camera-preview" playsinline muted autoplay></video>
@@ -31,12 +31,24 @@
 
     <div class="preview-area" *ngIf="previewUrl">
       <img [src]="previewUrl" alt="Önizleme" class="image-preview">
+      <p class="preview-name" *ngIf="previewName">{{ previewName }}</p>
       <div class="preview-actions">
-        <button class="btn btn-outline" type="button" (click)="clearSelection()">Değiştir</button>
-        <button class="btn btn-primary" type="button">Analizi Başlat</button>
+        <button class="btn btn-outline" type="button" (click)="clearSelection()" [disabled]="analysisStatus() === 'loading'">Değiştir</button>
+        <button class="btn btn-primary" type="button" (click)="startAnalysis()" [disabled]="analysisStatus() === 'loading' || !isAuthenticated()">
+          {{ analysisStatus() === 'loading' ? 'Analiz Ediliyor...' : 'Analizi Başlat' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="auth-lock" *ngIf="!isAuthenticated()">
+      <div class="lock-card">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        <p>Analiz başlatmak için giriş yapmanız gerekir.</p>
       </div>
     </div>
   </div>
+
+  <p class="action-error" *ngIf="actionError">{{ actionError }}</p>
 
   <div class="upload-tips">
     <h3>İpuçları:</h3>
