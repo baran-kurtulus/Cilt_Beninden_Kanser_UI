@@ -4,6 +4,7 @@ import { Header } from './components/header/header';
 import { AuthPanel } from './components/auth-panel/auth-panel';
 import { UploadArea } from './components/upload-area/upload-area';
 import { AnalysisResult } from './components/analysis-result/analysis-result';
+import { HistoryPanel } from './components/history-panel/history-panel';
 import { Footer } from './components/footer/footer';
 
 @Component({
@@ -15,6 +16,7 @@ import { Footer } from './components/footer/footer';
     AuthPanel,
     UploadArea,
     AnalysisResult,
+    HistoryPanel,
     Footer
   ],
   templateUrl: './app.html',

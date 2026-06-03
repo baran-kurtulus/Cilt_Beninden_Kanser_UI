@@ -12,6 +12,7 @@ export interface AnalysisResultDto {
   modelVersion: string;
   recommendation?: string;
   createdAt: string;
+  maskOverlayBase64?: string;
 }
 
 type AnalysisStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -22,9 +23,19 @@ export class AnalysisService {
   private readonly _status = signal<AnalysisStatus>('idle');
   private readonly _errorMessage = signal<string | null>(null);
 
+  private readonly _history = signal<AnalysisResultDto[]>([]);
+  private readonly _historyStatus = signal<AnalysisStatus>('idle');
+  private readonly _historyError = signal<string | null>(null);
+  private readonly _overlayUrls = signal<Record<string, string>>({});
+
   readonly result = this._result.asReadonly();
   readonly status = this._status.asReadonly();
   readonly errorMessage = this._errorMessage.asReadonly();
+
+  readonly history = this._history.asReadonly();
+  readonly historyStatus = this._historyStatus.asReadonly();
+  readonly historyError = this._historyError.asReadonly();
+  readonly overlayUrls = this._overlayUrls.asReadonly();
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
@@ -60,6 +71,67 @@ export class AnalysisService {
           return throwError(() => error);
         })
       );
+  }
+
+  loadHistory(): Observable<AnalysisResultDto[]> {
+    if (!this.auth.isAuthenticated()) {
+      const error = new Error('Geçmişi görüntülemek için giriş yapmanız gerekiyor.');
+      this._historyStatus.set('error');
+      this._historyError.set(error.message);
+      return throwError(() => error);
+    }
+
+    const token = this.auth.token();
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+
+    this._historyStatus.set('loading');
+    this._history.set([]);
+    this._historyError.set(null);
+
+    return this.http
+      .get<AnalysisResultDto[]>(`${API_BASE_URL}/api/analysis/history`, { headers })
+      .pipe(
+        tap((results) => {
+          this._history.set(results);
+          this._historyStatus.set('success');
+        }),
+        catchError((error) => {
+          this._historyStatus.set('error');
+          this._historyError.set(this.toMessage(error));
+          return throwError(() => error);
+        })
+      );
+  }
+
+  clearHistory(): void {
+    this._history.set([]);
+    this._historyStatus.set('idle');
+    this._historyError.set(null);
+  }
+
+  loadOverlay(analysisId: string): void {
+    if (this._overlayUrls()[analysisId]) {
+      return;
+    }
+
+    const token = this.auth.token();
+    if (!token) {
+      return;
+    }
+
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+    this.http
+      .get(`${API_BASE_URL}/api/analysis/${analysisId}/overlay`, {
+        headers,
+        responseType: 'blob',
+      })
+      .subscribe({
+        next: (blob) => {
+          const url = URL.createObjectURL(blob);
+          this._overlayUrls.update((m) => ({ ...m, [analysisId]: url }));
+        },
+      });
   }
 
   reset(): void {

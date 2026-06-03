@@ -1,31 +1,55 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AnalysisService, AnalysisResultDto } from '../../services/analysis.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-analysis-result',
+  selector: 'app-history-panel',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './analysis-result.html',
-  styleUrl: './analysis-result.scss',
+  templateUrl: './history-panel.html',
+  styleUrl: './history-panel.scss',
 })
-export class AnalysisResult {
+export class HistoryPanel implements OnInit {
   private readonly analysisService = inject(AnalysisService);
   private readonly auth = inject(AuthService);
 
-  readonly result = this.analysisService.result;
-  readonly status = this.analysisService.status;
-  readonly errorMessage = this.analysisService.errorMessage;
+  readonly history = this.analysisService.history;
+  readonly historyStatus = this.analysisService.historyStatus;
+  readonly historyError = this.analysisService.historyError;
   readonly isAuthenticated = this.auth.isAuthenticated;
+  readonly overlayUrls = this.analysisService.overlayUrls;
 
-  readonly riskLevel = computed<'low' | 'medium' | 'high'>(() => {
-    const data = this.result();
-    if (!data) {
-      return 'low';
+  readonly isEmpty = computed(() => this.historyStatus() === 'success' && this.history().length === 0);
+  readonly isNotLoaded = computed(() => this.historyStatus() === 'idle');
+
+  constructor() {
+    effect(() => {
+      const items = this.history();
+      if (items.length > 0) {
+        for (const item of items) {
+          this.analysisService.loadOverlay(item.id);
+        }
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    if (this.isAuthenticated() && this.historyStatus() === 'idle') {
+      this.analysisService.loadHistory().subscribe();
     }
+  }
 
-    const normalized = this.normalizedLabel(data);
+  refresh(): void {
+    this.analysisService.loadHistory().subscribe();
+  }
+
+  overlaySrc(id: string): string | null {
+    return this.overlayUrls()[id] ?? null;
+  }
+
+  riskLevel(item: AnalysisResultDto): 'low' | 'medium' | 'high' {
+    const normalized = this.normalizedLabel(item);
     if (normalized === 'malignant') {
       return 'high';
     }
@@ -34,15 +58,15 @@ export class AnalysisResult {
       return 'medium';
     }
 
-    if (data.confidence < 0.7) {
+    if (item.confidence < 0.7) {
       return 'medium';
     }
 
     return 'low';
-  });
+  }
 
-  readonly riskLevelText = computed(() => {
-    switch (this.riskLevel()) {
+  riskLabel(item: AnalysisResultDto): string {
+    switch (this.riskLevel(item)) {
       case 'high':
         return 'Yüksek';
       case 'medium':
@@ -50,28 +74,23 @@ export class AnalysisResult {
       default:
         return 'Düşük';
     }
-  });
+  }
 
-  readonly confidencePercent = computed(() => {
-    const data = this.result();
-    if (!data) {
-      return 0;
-    }
-
-    if (data.confidencePercent) {
-      const cleaned = data.confidencePercent.replace('%', '').replace(',', '.');
+  confidence(item: AnalysisResultDto): number {
+    if (item.confidencePercent) {
+      const cleaned = item.confidencePercent.replace('%', '').replace(',', '.');
       const parsed = Number(cleaned);
       if (Number.isFinite(parsed)) {
         return Math.min(100, Math.max(0, parsed));
       }
     }
 
-    const computedValue = Math.round(data.confidence * 1000) / 10;
+    const computedValue = Math.round(item.confidence * 1000) / 10;
     return Math.min(100, Math.max(0, computedValue));
-  });
+  }
 
-  readonly classification = computed(() => {
-    const normalized = this.normalizedLabel(this.result());
+  classification(item: AnalysisResultDto): string {
+    const normalized = this.normalizedLabel(item);
     switch (normalized) {
       case 'malignant':
         return 'Malignant (Kötü Huylu)';
@@ -80,20 +99,15 @@ export class AnalysisResult {
       default:
         return 'Benign (İyi Huylu)';
     }
-  });
+  }
 
-  readonly recommendation = computed(() => {
-    const data = this.result();
-    if (!data) {
-      return '';
+  recommendation(item: AnalysisResultDto): string {
+    if (item.recommendation) {
+      return item.recommendation;
     }
 
-    if (data.recommendation) {
-      return data.recommendation;
-    }
-
-    const normalized = this.normalizedLabel(data);
-    const conf = this.confidencePercent();
+    const normalized = this.normalizedLabel(item);
+    const conf = this.confidence(item);
 
     if (normalized === 'malignant') {
       if (conf >= 90) {
@@ -121,28 +135,9 @@ export class AnalysisResult {
     }
 
     return 'Analiz sonucu iyi huylu olarak değerlendirildi ancak güven düzeyi orta seviyededir. Daha net bir sonuç için farklı açıdan veya daha yüksek çözünürlüklü bir fotoğrafla tekrar analiz yapabilirsiniz. Şüphe durumunda mutlaka bir dermatoloğa başvurun.';
-  });
-
-  readonly modelVersion = computed(() => this.result()?.modelVersion ?? '-');
-  readonly createdAt = computed(() => this.formatDate(this.result()?.createdAt));
-
-  readonly overlaySrc = computed(() => {
-    const data = this.result();
-    if (!data?.maskOverlayBase64) {
-      return null;
-    }
-    return `data:image/png;base64,${data.maskOverlayBase64}`;
-  });
-
-  private normalizedLabel(data: AnalysisResultDto | null | undefined): string {
-    if (!data?.label) {
-      return 'benign';
-    }
-
-    return data.label.toLowerCase();
   }
 
-  private formatDate(value: string | undefined): string {
+  formatDate(value: string): string {
     if (!value) {
       return '-';
     }
@@ -153,5 +148,13 @@ export class AnalysisResult {
     }
 
     return date.toLocaleString('tr-TR');
+  }
+
+  private normalizedLabel(item: AnalysisResultDto): string {
+    if (!item?.label) {
+      return 'benign';
+    }
+
+    return item.label.toLowerCase();
   }
 }

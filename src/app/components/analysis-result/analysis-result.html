@@ -29,6 +29,14 @@
       {{ riskLevelText() }} Risk
     </div>
 
+    <div class="overlay-container" *ngIf="overlaySrc()">
+      <h3>Segmentasyon (UNet)</h3>
+      <img
+        class="overlay-image"
+        [src]="overlaySrc()"
+        alt="UNet segmentation overlay" />
+    </div>
+
     <div class="confidence-meter">
       <div class="meter-label">
         <span>Güven Aralığı</span>

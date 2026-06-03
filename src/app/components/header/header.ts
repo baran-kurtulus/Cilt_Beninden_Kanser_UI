@@ -15,4 +15,12 @@ export class Header {
   logout(): void {
     this.auth.logout();
   }
+
+  scrollToHistory(event: Event): void {
+    event.preventDefault();
+    const el = document.querySelector('.history-section');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
 }
